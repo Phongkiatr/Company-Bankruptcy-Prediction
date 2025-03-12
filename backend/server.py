@@ -3,6 +3,10 @@ from flask_cors import CORS  # ใช้ CORS สำหรับ React
 import joblib  # ใช้ joblib ในการโหลดโมเดล
 import numpy as np
 import os  # สำหรับอ่านค่าจาก environment variable
+import warnings
+
+# ปิดการแจ้งเตือนจาก sklearn
+warnings.filterwarnings('ignore', category=UserWarning, module='sklearn')
 
 app = Flask(__name__)
 CORS(app)  # เปิดให้ React สามารถเรียก API ได้จากทุกที่
