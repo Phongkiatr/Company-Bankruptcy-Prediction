@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS  # ใช้ CORS สำหรับ React
 import joblib  # ใช้ joblib ในการโหลดโมเดล
 import numpy as np
+import os  # สำหรับอ่านค่าจาก environment variable
 
 app = Flask(__name__)
 CORS(app)  # เปิดให้ React สามารถเรียก API ได้จากทุกที่
@@ -32,4 +33,6 @@ def calculate_sum():
     return jsonify({'prediction': result})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # ใช้พอร์ตจาก environment variable ที่ Render กำหนด และเปิดให้เข้าถึงจากภายนอก
+    port = int(os.environ.get("PORT", 5000))  # หากไม่มีจะใช้พอร์ต 5000
+    app.run(debug=True, host="0.0.0.0", port=port)  # กำหนด host เป็น 0.0.0.0
