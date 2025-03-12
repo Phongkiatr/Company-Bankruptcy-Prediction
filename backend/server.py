@@ -6,7 +6,7 @@ import numpy as np
 app = Flask(__name__)
 CORS(app)  # เปิดให้ React สามารถเรียก API ได้จากทุกที่
 
-model = joblib.load("backend/random_forest_standard_modelfinal.pkl")
+model = joblib.load("random_forest_standard_modelfinal.pkl")
 
 # ใช้โมเดลพยากรณ์
 @app.route('/predict', methods=['POST'])
