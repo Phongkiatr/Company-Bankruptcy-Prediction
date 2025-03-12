@@ -6,7 +6,7 @@ import numpy as np
 app = Flask(__name__)
 CORS(app)  # เปิดให้ React สามารถเรียก API ได้จากทุกที่
 
-model = joblib.load("backend/randomforest_model.pkl")
+model = joblib.load("backend/random_forest_standard_modelfinal.pkl")
 
 # ใช้โมเดลพยากรณ์
 @app.route('/predict', methods=['POST'])
@@ -27,4 +27,4 @@ def calculate_sum():
     return jsonify({'prediction': result})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5000)  # กำหนดให้ Flask รันที่พอร์ต 5000
