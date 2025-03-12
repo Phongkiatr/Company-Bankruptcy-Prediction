@@ -86,7 +86,7 @@ function App() {
         </div>
       </div>
       <button onClick={calculateSum} style={styles.button}>คำนวณ</button>
-      <p>{result}</p>
+      <p style={{ fontSize: '20px' }}>{result}</p>
     </div>
   );
 }
@@ -98,7 +98,8 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     height: '100vh', // ให้ความสูงเต็มหน้าจอ
-    textAlign: 'left'
+    textAlign: 'left',
+    background: 'linear-gradient(to top,rgb(252, 194, 251),rgb(248, 250, 212))',
   },
   formContainer: {
     display: 'flex',
