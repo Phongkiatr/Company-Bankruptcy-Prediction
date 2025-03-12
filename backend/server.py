@@ -8,6 +8,11 @@ CORS(app)  # เปิดให้ React สามารถเรียก API �
 
 model = joblib.load("random_forest_standard_modelfinal.pkl")
 
+# Route สำหรับ root
+@app.route('/')
+def index():
+    return "Flask API is running!"  # เพิ่มข้อความทดสอบ
+
 # ใช้โมเดลพยากรณ์
 @app.route('/predict', methods=['POST'])
 def calculate_sum():
@@ -27,4 +32,4 @@ def calculate_sum():
     return jsonify({'prediction': result})
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)  # กำหนดให้ Flask รันที่พอร์ต 5000
+    app.run(debug=True)
