@@ -1,44 +1,50 @@
 import React, { useState } from 'react';
 
 function App() {
-  // สร้าง state สำหรับเก็บค่าของตัวเลขและผลลัพธ์
   const [numbers, setNumbers] = useState(Array(14).fill(''));
   const [result, setResult] = useState(null);
+  const [resultColor, setResultColor] = useState('#6200ea'); // เพิ่ม state สำหรับสีของผลลัพธ์
 
-  // ฟังก์ชันสำหรับอัพเดทค่าในตัวเลข
   const handleChange = (e, index) => {
     const newNumbers = [...numbers];
     newNumbers[index] = e.target.value;
     setNumbers(newNumbers);
   };
 
-  // ฟังก์ชันสำหรับคำนวณผลรวม
   const calculateSum = async () => {
-    // ตรวจสอบว่ามีช่องไหนที่ยังกรอกไม่ครบหรือไม่
     if (numbers.some(num => num === '')) {
       setResult('กรุณากรอกให้ครบ');
+      setResultColor('#6200ea'); // สีปกติ
       return;
     }
 
-    // ตรวจสอบว่าทุกค่าใน numbers เป็นตัวเลขหรือไม่ (รองรับทั้งจำนวนเต็มและทศนิยม)
     if (numbers.some(num => isNaN(num) || num === '' || num.trim() === '')) {
       setResult('กรุณากรอกข้อมูลที่เป็นตัวเลขเท่านั้น');
+      setResultColor('#6200ea'); // สีปกติ
       return;
     }
 
-    // ส่งคำขอไปที่ Flask API
     const response = await fetch('https://company-bankruptcy-prediction-0a7i.onrender.com/predict', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ numbers: numbers.map(num => parseFloat(num)) }) // แปลงเป็นจำนวนจริง
+      body: JSON.stringify({ numbers: numbers.map(num => parseFloat(num)) })
     });
 
-    // รับผลลัพธ์จาก API และตั้งค่าใน state
     const data = await response.json();
-    setResult(`Prediction: ${data.prediction}`);
+    const prediction = data.prediction;
+
+    if (prediction === 'Alive') {
+      setResult(`Prediction: ${prediction}`);
+      setResultColor('green'); // ถ้าเป็น Alive ให้เป็นสีเขียว
+    } else if (prediction === 'Bankrupt') {
+      setResult(`Prediction: ${prediction}`);
+      setResultColor('red'); // ถ้าเป็น Bankrupt ให้เป็นสีแดง
+    } else {
+      setResult(`Prediction: ${prediction}`);
+      setResultColor('#6200ea'); // ถ้าเป็นค่าอื่น ให้แสดงสีปกติ
+    }
   };
 
-  // ข้อความที่จะแสดงในแต่ละช่อง
   const inputLabels = [
     'Year of establishment (AD)',
     "Current assets ($)",
@@ -58,7 +64,7 @@ function App() {
 
   return (
     <div style={styles.container}>
-      <h2>Bankruptcy Prediction</h2>
+      <h2 style={styles.header}>Bankruptcy Prediction</h2>
       <div style={styles.formContainer}>
         <div style={styles.column}>
           {numbers.slice(0, 7).map((num, index) => (
@@ -90,7 +96,7 @@ function App() {
         </div>
       </div>
       <button onClick={calculateSum} style={styles.button}>คำนวณ</button>
-      <p style={{ fontSize: '20px' }}>{result}</p>
+      {result && <p style={{ ...styles.resultText, color: resultColor }}>{result}</p>} {/* แสดงผลลัพธ์ด้วยสีที่กำหนด */}
     </div>
   );
 }
@@ -101,38 +107,66 @@ const styles = {
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    height: '100vh', // ให้ความสูงเต็มหน้าจอ
-    textAlign: 'left',
-    background: 'linear-gradient(to top,rgb(252, 194, 251),rgb(248, 250, 212))',
+    height: '100vh',
+    textAlign: 'center',
+    background: 'linear-gradient(to top, #fce4ec, #e1bee7)',
+    fontFamily: 'Arial, sans-serif',
+  },
+  header: {
+    fontSize: '28px',
+    color: '#6200ea',
+    marginBottom: '20px',
+    fontWeight: 'bold',
   },
   formContainer: {
     display: 'flex',
     justifyContent: 'space-between',
-    width: '50%', // ปรับความกว้างให้พอดี
+    width: '60%',
+    maxWidth: '1000px',
   },
   column: {
     display: 'flex',
     flexDirection: 'column',
-    width: '45%', // แบ่งฝั่งให้มีขนาดครึ่งหนึ่ง
+    width: '45%',
   },
   inputContainer: {
-    marginBottom: '20px', // เพิ่มระยะห่างระหว่างแต่ละกล่อง
+    marginBottom: '12px',
   },
   label: {
-    display: 'block',  // ทำให้ label อยู่ในบรรทัดใหม่
-    marginBottom: '5px', // เพิ่มพื้นที่ว่างด้านล่าง label
+    display: 'block',
+    fontSize: '14px',
+    marginBottom: '6px',
+    color: '#333',
+    textAlign: 'left', // ทำให้ข้อความชิดซ้าย
+    width: '100%', // ให้ครอบคลุมความกว้างเต็ม
   },
   input: {
-    padding: '5px',
+    padding: '10px',
+    fontSize: '14px',
+    border: '1px solid #ccc',
+    borderRadius: '5px',
     width: '100%',
-    textAlign: 'left'
+    boxSizing: 'border-box',
+    backgroundColor: '#f9f9f9',
+    transition: '0.3s',
   },
   button: {
     marginTop: '20px',
-    padding: '10px 20px',
+    padding: '10px 18px',
     fontSize: '16px',
-    cursor: 'pointer'
-  }
+    fontWeight: 'bold',
+    color: '#fff',
+    backgroundColor: '#6200ea',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    transition: 'background-color 0.3s',
+  },
+  resultText: {
+    fontSize: '16px',
+    marginTop: '20px',
+    fontWeight: 'bold',
+  },
 };
 
 export default App;
