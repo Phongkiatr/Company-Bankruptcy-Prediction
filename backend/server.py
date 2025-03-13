@@ -66,7 +66,7 @@ def calculate_sum():
     else:
         result = "Unknown"  # ถ้าไม่ได้ค่า 0 หรือ 1
 
-    return jsonify({'prediction': result})
+    return jsonify({'prediction': result, 'prediction_values': scaled_inputs.tolist()})
 
 if __name__ == '__main__':
     # ใช้พอร์ตจาก environment variable ที่ Render กำหนด และเปิดให้เข้าถึงจากภายนอก

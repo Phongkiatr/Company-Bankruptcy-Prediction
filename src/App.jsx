@@ -4,6 +4,7 @@ function App() {
   const [numbers, setNumbers] = useState(Array(14).fill(''));
   const [result, setResult] = useState(null);
   const [resultColor, setResultColor] = useState('#6200ea'); // เพิ่ม state สำหรับสีของผลลัพธ์
+  const [predictionValues, setPredictionValues] = useState([]); // เพิ่ม state สำหรับ prediction_values
 
   const handleChange = (e, index) => {
     const newNumbers = [...numbers];
@@ -11,7 +12,7 @@ function App() {
     setNumbers(newNumbers);
   };
 
-  const calculateSum = async () => {
+  const predict = async () => {
     if (numbers.some(num => num === '')) {
       setResult('กรุณากรอกให้ครบ');
       setResultColor('#6200ea'); // สีปกติ
@@ -24,7 +25,7 @@ function App() {
       return;
     }
 
-    const response = await fetch('https://company-bankruptcy-prediction-0a7i.onrender.com/predict', {
+    const response = await fetch('http://127.0.0.1:5000/predict', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ numbers: numbers.map(num => parseFloat(num)) })
@@ -32,6 +33,10 @@ function App() {
 
     const data = await response.json();
     const prediction = data.prediction;
+    const prediction_values = data.prediction_values;
+
+    // แสดง prediction_values
+    setPredictionValues(prediction_values);
 
     if (prediction === 'Alive') {
       setResult(`Prediction: ${prediction}`);
@@ -95,8 +100,23 @@ function App() {
           ))}
         </div>
       </div>
-      <button onClick={calculateSum} style={styles.button}>คำนวณ</button>
+      <button onClick={predict} style={styles.button}>คำนวณ</button>
+
       {result && <p style={{ ...styles.resultText, color: resultColor }}>{result}</p>} {/* แสดงผลลัพธ์ด้วยสีที่กำหนด */}
+
+      {/* แสดง prediction_values */}
+      {predictionValues.length > 0 && (
+        <div style={styles.predictionValuesContainer}>
+          <ul style={styles.predictionValuesList}>
+            {predictionValues.map((row, rowIndex) => (
+              <li key={rowIndex} style={styles.predictionValueItem}>
+                {/* ใช้ join(' ') เพื่อเว้นวรรคระหว่างค่าภายในแต่ละบรรทัด */}
+                {row.join('  |  ')}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
@@ -166,6 +186,18 @@ const styles = {
     fontSize: '16px',
     marginTop: '20px',
     fontWeight: 'bold',
+  },
+  predictionValuesContainer: {
+    textAlign: 'left',
+  },
+  predictionValuesList: {
+    listStyleType: 'none',
+    padding: 0,
+  },
+  predictionValueItem: {
+    fontSize: '14px',
+    color: '#333',
+    marginBottom: '6px',
   },
 };
 
