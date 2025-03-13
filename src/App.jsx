@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 function App() {
   // สร้าง state สำหรับเก็บค่าของตัวเลขและผลลัพธ์
-  const [numbers, setNumbers] = useState(Array(10).fill(''));
+  const [numbers, setNumbers] = useState(Array(14).fill(''));
   const [result, setResult] = useState(null);
 
   // ฟังก์ชันสำหรับอัพเดทค่าในตัวเลข
@@ -40,16 +40,20 @@ function App() {
 
   // ข้อความที่จะแสดงในแต่ละช่อง
   const inputLabels = [
-    "กรุณากรอกตัวเลขที่ 1",
-    "กรุณากรอกตัวเลขที่ 2",
-    "กรุณากรอกตัวเลขที่ 3",
-    "กรุณากรอกตัวเลขที่ 4",
-    "กรุณากรอกตัวเลขที่ 5",
-    "กรุณากรอกตัวเลขที่ 6",
-    "กรุณากรอกตัวเลขที่ 7",
-    "กรุณากรอกตัวเลขที่ 8",
-    "กรุณากรอกตัวเลขที่ 9",
-    "กรุณากรอกตัวเลขที่ 10"
+    'Year of establishment (AD)',
+    "Current assets ($)",
+    "EBITDA ($)",
+    "Total Receivables ($)",
+    "Market value ($)",
+    "Net sales ($)",
+    "Total assets ($)",
+    "Total Long-term debt ($)",
+    "EBIT ($)",
+    "Gross Profit ($)",
+    "Total Current Liabilities ($)",
+    "Retained Earnings ($)",
+    "Total Revenue ($)",
+    "Total Liabilities ($)"
   ];
 
   return (
@@ -57,7 +61,7 @@ function App() {
       <h2>Bankruptcy Prediction</h2>
       <div style={styles.formContainer}>
         <div style={styles.column}>
-          {numbers.slice(0, 5).map((num, index) => (
+          {numbers.slice(0, 7).map((num, index) => (
             <div key={index} style={styles.inputContainer}>
               <label style={styles.label}>{inputLabels[index]}</label>
               <input
@@ -71,14 +75,14 @@ function App() {
           ))}
         </div>
         <div style={styles.column}>
-          {numbers.slice(5).map((num, index) => (
-            <div key={index + 5} style={styles.inputContainer}>
-              <label style={styles.label}>{inputLabels[index + 5]}</label>
+          {numbers.slice(7).map((num, index) => (
+            <div key={index + 7} style={styles.inputContainer}>
+              <label style={styles.label}>{inputLabels[index + 7]}</label>
               <input
                 type="number"
                 value={num}
-                onChange={(e) => handleChange(e, index + 5)}
-                placeholder={inputLabels[index + 5]}
+                onChange={(e) => handleChange(e, index + 7)}
+                placeholder={inputLabels[index + 7]}
                 style={styles.input}
               />
             </div>
@@ -104,7 +108,7 @@ const styles = {
   formContainer: {
     display: 'flex',
     justifyContent: 'space-between',
-    width: '20%', // กำหนดความกว้างของฟอร์ม
+    width: '50%', // ปรับความกว้างให้พอดี
   },
   column: {
     display: 'flex',
